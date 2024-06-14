@@ -1,9 +1,13 @@
 "use client";
 
 import Lottie from "react-lottie-player";
-import lottieJsonA from "../public/lotties/flowerA.json";
-import lottieJsonB from "../public/lotties/flowerB.json";
-import lottieJsonC from "../public/lotties/flowerC.json";
+import lottieJsonFlowerA from "../public/lotties/flowerA.json";
+import lottieJsonFlowerB from "../public/lotties/flowerB.json";
+import lottieJsonFlowerC from "../public/lotties/flowerC.json";
+import lottieJsonFlowerD from "../public/lotties/flowerD.json";
+import lottieJsonLove from "../public/lotties/love.json";
+import lottieJsonWeddingRing from "../public/lotties/wedding_ring.json";
+import lottieJsonAfterLove from "../public/lotties/after_love.json";
 import {
   RefObject,
   useCallback,
@@ -14,14 +18,26 @@ import {
 } from "react";
 import { AnimationItem } from "./types/custom/lottie.type";
 import clsx from "clsx";
+import Image from "next/image";
 
 type RefAnimationDelay = {
   ref: RefObject<AnimationItem>;
   delay: number;
 };
 
+type LottieRefWithAnimationData = {
+  ref: RefObject<AnimationItem>;
+  start: number;
+  end: number;
+};
+
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
+
+  const LoveLottieRef = useRef<AnimationItem>(null);
+  const WeddingRingLottieRef = useRef<AnimationItem>(null);
+  const AfterLoveRef = useRef<AnimationItem>(null);
+
   const bottomCenterRef = useRef<AnimationItem>(null);
   const bottomLeftRef = useRef<AnimationItem>(null);
   const bottomRightRef = useRef<AnimationItem>(null);
@@ -47,93 +63,33 @@ export default function Home() {
   const rightRef70 = useRef<AnimationItem>(null);
   const rightRef80 = useRef<AnimationItem>(null);
   const rightRef90 = useRef<AnimationItem>(null);
-  const leftRefs: Record<number, RefAnimationDelay> = useMemo(() => {
+  const leftRefs: Record<number, LottieRefWithAnimationData> = useMemo(() => {
     return {
-      0: {
-        ref: leftRef0,
-        delay: 0,
-      },
-      10: {
-        ref: leftRef10,
-        delay: 30,
-      },
-      20: {
-        ref: leftRef20,
-        delay: 60,
-      },
-      30: {
-        ref: leftRef30,
-        delay: 90,
-      },
-      40: {
-        ref: leftRef40,
-        delay: 115,
-      },
-      50: {
-        ref: leftRef50,
-        delay: 140,
-      },
-      60: {
-        ref: leftRef60,
-        delay: 160,
-      },
-      70: {
-        ref: leftRef70,
-        delay: 195,
-      },
-      80: {
-        ref: leftRef80,
-        delay: 215,
-      },
-      90: {
-        ref: leftRef90,
-        delay: 250,
-      },
+      0: { ref: leftRef0, start: 0, end: 0.33 },
+      10: { ref: leftRef10, start: 0.02, end: 0.6 },
+      20: { ref: leftRef20, start: 0.04, end: 0.62 },
+      30: { ref: leftRef30, start: 0.06, end: 0.64 },
+      40: { ref: leftRef40, start: 0.08, end: 0.66 },
+      50: { ref: leftRef50, start: 0.1, end: 0.68 },
+      60: { ref: leftRef60, start: 0.12, end: 0.7 },
+      70: { ref: leftRef70, start: 0.14, end: 0.72 },
+      80: { ref: leftRef80, start: 0.16, end: 0.74 },
+      90: { ref: leftRef90, start: 0.18, end: 0.76 },
     };
   }, []);
 
-  const rightRefs: Record<number, RefAnimationDelay> = useMemo(() => {
+  const rightRefs: Record<number, LottieRefWithAnimationData> = useMemo(() => {
     return {
-      0: {
-        ref: rightRef0,
-        delay: 0,
-      },
-      10: {
-        ref: rightRef10,
-        delay: 30,
-      },
-      20: {
-        ref: rightRef20,
-        delay: 60,
-      },
-      30: {
-        ref: rightRef30,
-        delay: 90,
-      },
-      40: {
-        ref: rightRef40,
-        delay: 115,
-      },
-      50: {
-        ref: rightRef50,
-        delay: 140,
-      },
-      60: {
-        ref: rightRef60,
-        delay: 160,
-      },
-      70: {
-        ref: rightRef70,
-        delay: 195,
-      },
-      80: {
-        ref: rightRef80,
-        delay: 215,
-      },
-      90: {
-        ref: rightRef90,
-        delay: 250,
-      },
+      0: { ref: rightRef0, start: 0, end: 0.33 },
+      10: { ref: rightRef10, start: 0.02, end: 0.6 },
+      20: { ref: rightRef20, start: 0.04, end: 0.62 },
+      30: { ref: rightRef30, start: 0.06, end: 0.64 },
+      40: { ref: rightRef40, start: 0.08, end: 0.66 },
+      50: { ref: rightRef50, start: 0.1, end: 0.68 },
+      60: { ref: rightRef60, start: 0.12, end: 0.7 },
+      70: { ref: rightRef70, start: 0.14, end: 0.72 },
+      80: { ref: rightRef80, start: 0.16, end: 0.74 },
+      90: { ref: rightRef90, start: 0.18, end: 0.76 },
     };
   }, []);
 
@@ -151,39 +107,34 @@ export default function Home() {
   }, []);
 
   const setLottieFrame = useCallback(
-    (ref: RefObject<AnimationItem>, delay: number) => {
+    ({ end, ref, start }: LottieRefWithAnimationData) => {
       if (ref.current) {
         const maxScroll =
           document.documentElement.scrollHeight - window.innerHeight;
-        const scrollFraction = (scrollY / maxScroll) * 0.92 + 0.08;
-        const frame = Math.floor(
-          scrollFraction * (ref.current.getDuration(true) - delay)
-        );
 
-        ref.current.goToAndStop(frame, true);
-      }
-    },
-    [scrollY]
-  );
+        const middle = (end + start) / 2;
 
-  const setLottieFrameReverse = useCallback(
-    (ref: RefObject<AnimationItem>, delay: number) => {
-      const _scrollY = scrollY + 150;
-      if (ref.current) {
-        const maxScroll =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const scrollFraction =
-          _scrollY * 2 < maxScroll
-            ? (_scrollY * 2) / maxScroll
-            : ((maxScroll - _scrollY) * 2) / maxScroll;
+        ///애니매이션이 정방향일 때
+        if (maxScroll * middle > scrollY) {
+          const scrollFraction =
+            (scrollY - maxScroll * start) / (maxScroll * (middle - start));
 
-        const frame = Math.floor(
-          scrollFraction *
-            (ref.current.getDuration(true) -
-              (_scrollY * 2 < maxScroll ? delay : 250 - delay))
-        );
+          const frame = Math.floor(
+            scrollFraction * ref.current.getDuration(true)
+          );
 
-        ref.current.goToAndStop(frame, true);
+          ref.current.goToAndStop(frame, true);
+        } else {
+          const scrollFraction =
+            (maxScroll * (end - middle) - (scrollY - maxScroll * middle)) /
+            (maxScroll * (end - middle));
+
+          const frame = Math.floor(
+            scrollFraction * ref.current.getDuration(true)
+          );
+
+          ref.current.goToAndStop(frame, true);
+        }
       }
     },
     [scrollY]
@@ -192,30 +143,40 @@ export default function Home() {
   useEffect(() => {
     (
       [
-        { ref: bottomCenterRef, delay: 0 },
-        { ref: bottomLeftRef, delay: 0 },
-        { ref: bottomRightRef, delay: 0 },
-      ] as RefAnimationDelay[]
-    ).forEach((data) => {
-      setLottieFrame(data.ref, data.delay);
-    });
-
-    (
-      [
+        { ref: bottomCenterRef, start: 0, end: 0.75 },
+        { ref: bottomLeftRef, start: 0, end: 0.7 },
+        { ref: bottomRightRef, start: 0, end: 0.7 },
+        { ref: LoveLottieRef, start: 0, end: 0.3 },
+        { ref: WeddingRingLottieRef, start: 0.3, end: 0.55 },
+        { ref: AfterLoveRef, start: 0.55, end: 0.7 },
         ...Object.entries(leftRefs).map((arr) => arr[1]),
         ...Object.entries(rightRefs).map((arr) => arr[1]),
-      ] as RefAnimationDelay[]
+      ] as LottieRefWithAnimationData[]
     ).forEach((data) => {
-      setLottieFrameReverse(data.ref, data.delay);
+      setLottieFrame(data);
     });
-  }, [setLottieFrame, scrollY, leftRefs, rightRefs, setLottieFrameReverse]);
+  }, [setLottieFrame, scrollY, leftRefs, rightRefs]);
 
   return (
-    <main className="h-[4000px]">
-      <div className="w-full h-[500px] flex items-center justify-center text-4xl">
+    <main className="h-[4500px]">
+      <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-4xl">
         <span>이해람</span>
         <span>임예은</span>
       </div>
+      <div className="w-full h-[1800px]"></div>
+      <div className="w-full text-center text-3xl">갤러리</div>
+      <div className="w-full grid grid-cols-2 gap-2 p-5">
+        <MyImage url="/imgs/0.jpg"></MyImage>
+        <MyImage url="/imgs/1.jpeg"></MyImage>
+        <MyImage url="/imgs/2.jpeg"></MyImage>
+        <MyImage url="/imgs/3.jpeg"></MyImage>
+        <MyImage url="/imgs/4.jpeg"></MyImage>
+        <MyImage url="/imgs/5.jpeg"></MyImage>
+        <MyImage url="/imgs/6.jpeg"></MyImage>
+        <MyImage url="/imgs/7.jpeg"></MyImage>
+        <MyImage url="/imgs/8.jpeg"></MyImage>
+      </div>
+      <div className="w-full text-center text-3xl mt-[50px]">오시는 길</div>
 
       {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
         <div
@@ -235,8 +196,8 @@ export default function Home() {
         >
           <Lottie
             loop={false}
-            ref={leftRefs[el].ref}
-            animationData={lottieJsonB}
+            ref={rightRefs[el].ref}
+            animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
             play={false}
           />
         </div>
@@ -260,8 +221,8 @@ export default function Home() {
         >
           <Lottie
             loop={false}
-            ref={rightRefs[el].ref}
-            animationData={lottieJsonB}
+            ref={leftRefs[el].ref}
+            animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
             play={false}
           />
         </div>
@@ -271,7 +232,7 @@ export default function Home() {
         <Lottie
           ref={bottomRightRef}
           loop={false}
-          animationData={lottieJsonC}
+          animationData={lottieJsonFlowerC}
           play={false}
         />
       </div>
@@ -279,7 +240,7 @@ export default function Home() {
         <Lottie
           ref={bottomLeftRef}
           loop={false}
-          animationData={lottieJsonC}
+          animationData={lottieJsonFlowerC}
           play={false}
         />
       </div>
@@ -287,10 +248,42 @@ export default function Home() {
         <Lottie
           ref={bottomCenterRef}
           loop={false}
-          animationData={lottieJsonA}
+          animationData={lottieJsonFlowerA}
+          play={false}
+        />
+      </div>
+      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+        <Lottie
+          ref={LoveLottieRef}
+          loop={false}
+          animationData={lottieJsonLove}
+          play={false}
+        />
+      </div>
+      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+        <Lottie
+          ref={WeddingRingLottieRef}
+          loop={false}
+          animationData={lottieJsonWeddingRing}
+          play={false}
+        />
+      </div>
+      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+        <Lottie
+          ref={AfterLoveRef}
+          loop={false}
+          animationData={lottieJsonAfterLove}
           play={false}
         />
       </div>
     </main>
+  );
+}
+
+function MyImage({ url }: { url: string }) {
+  return (
+    <div className="aspect-square w-full overflow-hidden rounded-2xl">
+      <Image alt="img" src={url} width={1000} height={1000}></Image>
+    </div>
   );
 }

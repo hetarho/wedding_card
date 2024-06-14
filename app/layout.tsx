@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Roboto, Nanum_Myeongjo } from "next/font/google";
 import "../app.css";
 
-const inter = Roboto({
+const inter = Nanum_Myeongjo({
   subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "700", "900"],
+  weight: ["400", "700", "800"],
 });
 
 export const metadata: Metadata = {
