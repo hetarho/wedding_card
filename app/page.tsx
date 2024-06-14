@@ -8,6 +8,7 @@ import lottieJsonFlowerD from "../public/lotties/flowerD.json";
 import lottieJsonLove from "../public/lotties/love.json";
 import lottieJsonWeddingRing from "../public/lotties/wedding_ring.json";
 import lottieJsonAfterLove from "../public/lotties/after_love.json";
+import lottieJsonArrow from "../public/lotties/arrow.json";
 import {
   RefObject,
   useCallback,
@@ -19,6 +20,12 @@ import {
 import { AnimationItem } from "./types/custom/lottie.type";
 import clsx from "clsx";
 import Image from "next/image";
+import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
+
+const myeonjo = Nanum_Myeongjo({
+  subsets: ["latin"],
+  weight: ["400", "700", "800"],
+});
 
 type RefAnimationDelay = {
   ref: RefObject<AnimationItem>;
@@ -37,6 +44,7 @@ export default function Home() {
   const LoveLottieRef = useRef<AnimationItem>(null);
   const WeddingRingLottieRef = useRef<AnimationItem>(null);
   const AfterLoveRef = useRef<AnimationItem>(null);
+  const ArrowRef = useRef<AnimationItem>(null);
 
   const bottomCenterRef = useRef<AnimationItem>(null);
   const bottomLeftRef = useRef<AnimationItem>(null);
@@ -65,31 +73,31 @@ export default function Home() {
   const rightRef90 = useRef<AnimationItem>(null);
   const leftRefs: Record<number, LottieRefWithAnimationData> = useMemo(() => {
     return {
-      0: { ref: leftRef0, start: 0, end: 0.33 },
-      10: { ref: leftRef10, start: 0.02, end: 0.6 },
-      20: { ref: leftRef20, start: 0.04, end: 0.62 },
-      30: { ref: leftRef30, start: 0.06, end: 0.64 },
-      40: { ref: leftRef40, start: 0.08, end: 0.66 },
-      50: { ref: leftRef50, start: 0.1, end: 0.68 },
-      60: { ref: leftRef60, start: 0.12, end: 0.7 },
-      70: { ref: leftRef70, start: 0.14, end: 0.72 },
-      80: { ref: leftRef80, start: 0.16, end: 0.74 },
-      90: { ref: leftRef90, start: 0.18, end: 0.76 },
+      0: { ref: leftRef0, start: 0, end: 0.52 },
+      10: { ref: leftRef10, start: 0.02, end: 0.54 },
+      20: { ref: leftRef20, start: 0.04, end: 0.56 },
+      30: { ref: leftRef30, start: 0.06, end: 0.58 },
+      40: { ref: leftRef40, start: 0.08, end: 0.6 },
+      50: { ref: leftRef50, start: 0.1, end: 0.62 },
+      60: { ref: leftRef60, start: 0.12, end: 0.64 },
+      70: { ref: leftRef70, start: 0.14, end: 0.66 },
+      80: { ref: leftRef80, start: 0.16, end: 0.68 },
+      90: { ref: leftRef90, start: 0.18, end: 0.7 },
     };
   }, []);
 
   const rightRefs: Record<number, LottieRefWithAnimationData> = useMemo(() => {
     return {
-      0: { ref: rightRef0, start: 0, end: 0.33 },
-      10: { ref: rightRef10, start: 0.02, end: 0.6 },
-      20: { ref: rightRef20, start: 0.04, end: 0.62 },
-      30: { ref: rightRef30, start: 0.06, end: 0.64 },
-      40: { ref: rightRef40, start: 0.08, end: 0.66 },
-      50: { ref: rightRef50, start: 0.1, end: 0.68 },
-      60: { ref: rightRef60, start: 0.12, end: 0.7 },
-      70: { ref: rightRef70, start: 0.14, end: 0.72 },
-      80: { ref: rightRef80, start: 0.16, end: 0.74 },
-      90: { ref: rightRef90, start: 0.18, end: 0.76 },
+      0: { ref: rightRef0, start: 0, end: 0.52 },
+      10: { ref: rightRef10, start: 0.02, end: 0.54 },
+      20: { ref: rightRef20, start: 0.04, end: 0.56 },
+      30: { ref: rightRef30, start: 0.06, end: 0.58 },
+      40: { ref: rightRef40, start: 0.08, end: 0.6 },
+      50: { ref: rightRef50, start: 0.1, end: 0.62 },
+      60: { ref: rightRef60, start: 0.12, end: 0.64 },
+      70: { ref: rightRef70, start: 0.14, end: 0.66 },
+      80: { ref: rightRef80, start: 0.16, end: 0.68 },
+      90: { ref: rightRef90, start: 0.18, end: 0.7 },
     };
   }, []);
 
@@ -143,29 +151,43 @@ export default function Home() {
   useEffect(() => {
     (
       [
-        { ref: bottomCenterRef, start: 0, end: 0.75 },
-        { ref: bottomLeftRef, start: 0, end: 0.7 },
-        { ref: bottomRightRef, start: 0, end: 0.7 },
+        { ref: bottomCenterRef, start: 0, end: 0.7 },
+        { ref: bottomLeftRef, start: 0, end: 0.65 },
+        { ref: bottomRightRef, start: 0, end: 0.65 },
         { ref: LoveLottieRef, start: 0, end: 0.3 },
         { ref: WeddingRingLottieRef, start: 0.3, end: 0.55 },
-        { ref: AfterLoveRef, start: 0.55, end: 0.7 },
+        { ref: AfterLoveRef, start: 0.55, end: 0.65 },
+        { ref: ArrowRef, start: 0, end: 0.1 },
         ...Object.entries(leftRefs).map((arr) => arr[1]),
         ...Object.entries(rightRefs).map((arr) => arr[1]),
       ] as LottieRefWithAnimationData[]
     ).forEach((data) => {
       setLottieFrame(data);
     });
+
+    if (scrollY == 0) {
+      LoveLottieRef.current?.play();
+      ArrowRef.current?.play();
+    }
   }, [setLottieFrame, scrollY, leftRefs, rightRefs]);
 
   return (
-    <main className="h-[4500px]">
-      <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-4xl">
-        <span>이해람</span>
-        <span>임예은</span>
+    <main className="h-[4800px]">
+      <div className={myeonjo.className}>
+        <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-4xl gap-3">
+          <div className="flex gap-1 items-center">
+            <span className="text-xl">신랑</span>
+            <span>이해람</span>
+          </div>
+          <div className="flex gap-1 items-center">
+            <span className="text-xl">신부</span>
+            <span>임예은</span>
+          </div>
+        </div>
       </div>
       <div className="w-full h-[1800px]"></div>
-      <div className="w-full text-center text-3xl">갤러리</div>
-      <div className="w-full grid grid-cols-2 gap-2 p-5">
+      <div className="w-full text-center text-3xl font-thin">갤러리</div>
+      <div className="w-full grid grid-cols-2 gap-3 p-3 mt-2">
         <MyImage url="/imgs/0.jpg"></MyImage>
         <MyImage url="/imgs/1.jpeg"></MyImage>
         <MyImage url="/imgs/2.jpeg"></MyImage>
@@ -176,7 +198,29 @@ export default function Home() {
         <MyImage url="/imgs/7.jpeg"></MyImage>
         <MyImage url="/imgs/8.jpeg"></MyImage>
       </div>
-      <div className="w-full text-center text-3xl mt-[50px]">오시는 길</div>
+      <div className="w-full text-center text-3xl mt-10 font-thin">
+        오시는 길
+      </div>
+      <div className="w-full h-[200px] justify-center items-center flex bg-slate-300 mt-5">
+        대충 지도 들어갈 공간
+      </div>
+      <div className="w-full text-center text-3xl mt-10 font-thin">
+        마음 전하기
+      </div>
+      <div className="mt-6 w-full flex flex-col items-center justify-center gap-3">
+        <div className="flex gap-4 items-center">
+          <div>신랑측 마음 전하기</div>
+          <div className="text-lg h-11 bg-blue-200 flex items-center p-5 rounded-full font-light">
+            계좌번호 보기
+          </div>
+        </div>
+        <div className="flex gap-4 items-center">
+          <div>신부측 마음 전하기</div>
+          <div className="text-lg h-11 bg-purple-200 flex items-center p-5 rounded-full font-light">
+            계좌번호 보기
+          </div>
+        </div>
+      </div>
 
       {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
         <div
@@ -255,9 +299,9 @@ export default function Home() {
       <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
         <Lottie
           ref={LoveLottieRef}
-          loop={false}
+          loop={scrollY == 0}
           animationData={lottieJsonLove}
-          play={false}
+          play={scrollY == 0}
         />
       </div>
       <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
@@ -273,6 +317,14 @@ export default function Home() {
           ref={AfterLoveRef}
           loop={false}
           animationData={lottieJsonAfterLove}
+          play={false}
+        />
+      </div>
+      <div className="w-[14vw] fixed left-0 bottom-10 right-0 mx-auto ">
+        <Lottie
+          ref={ArrowRef}
+          loop={scrollY == 0}
+          animationData={lottieJsonArrow}
           play={false}
         />
       </div>

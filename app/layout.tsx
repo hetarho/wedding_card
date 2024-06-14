@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Roboto, Nanum_Myeongjo } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import "../app.css";
 
-const inter = Nanum_Myeongjo({
+const notosansKR = Noto_Sans_KR({
   subsets: ["latin"],
-  weight: ["400", "700", "800"],
+  weight: ["100", "200", "300", "400", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={notosansKR.className}>{children}</body>
     </html>
   );
 }
