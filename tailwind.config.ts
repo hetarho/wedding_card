@@ -12,6 +12,9 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "green-texture": "url('/textures/green.jpeg')",
+        "paper-texture": "url('/textures/paper.avif')",
+        "paper1-texture": "url('/textures/paper1.jpg')",
       },
     },
   },
