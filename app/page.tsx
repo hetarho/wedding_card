@@ -27,11 +27,6 @@ const myeonjo = Nanum_Myeongjo({
   weight: ["400", "700", "800"],
 });
 
-type RefAnimationDelay = {
-  ref: RefObject<AnimationItem>;
-  delay: number;
-};
-
 type LottieRefWithAnimationData = {
   ref: RefObject<AnimationItem>;
   start: number;
@@ -40,6 +35,7 @@ type LottieRefWithAnimationData = {
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
+  const [scrollInfoTextOpacity, setScrollInfoTextOpacity] = useState(1);
 
   const LoveLottieRef = useRef<AnimationItem>(null);
   const WeddingRingLottieRef = useRef<AnimationItem>(null);
@@ -101,6 +97,20 @@ export default function Home() {
     };
   }, []);
 
+  function onArrowClick() {
+    if (scrollY < 3300) {
+      window.scrollTo({
+        top: 3300,
+        behavior: 'smooth' // 부드러운 스크롤 효과
+      });
+    } else if (scrollY < 2400) {
+      window.scrollTo({
+        top: 2400,
+        behavior: 'smooth' // 부드러운 스크롤 효과
+      });
+    }
+  }
+
   // 스크롤 이벤트 핸들러
   const handleScroll = () => {
     const position = window.scrollY;
@@ -119,6 +129,8 @@ export default function Home() {
       if (ref.current) {
         const maxScroll =
           document.documentElement.scrollHeight - window.innerHeight;
+
+        setScrollInfoTextOpacity((maxScroll / 2 - scrollY) * 2 / maxScroll);
 
         const middle = (end + start) / 2;
 
@@ -172,9 +184,10 @@ export default function Home() {
   }, [setLottieFrame, scrollY, leftRefs, rightRefs]);
 
   return (
-    <main className="h-[4800px]">
+    <main className="">
       <div className={myeonjo.className}>
-        <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-4xl gap-3">
+        <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-2xl gap-1">
+          <div className="text-4xl mb-2">12월 <span className="text-3xl">14일</span></div>
           <div className="flex gap-1 items-center">
             <span className="text-xl">신랑</span>
             <span>이해람</span>
@@ -204,20 +217,22 @@ export default function Home() {
       <div className="w-full h-[200px] justify-center items-center flex bg-slate-300 mt-5">
         대충 지도 들어갈 공간
       </div>
-      <div className="w-full text-center text-3xl mt-10 font-thin">
-        마음 전하기
-      </div>
-      <div className="mt-6 w-full flex flex-col items-center justify-center gap-3">
-        <div className="flex gap-4 items-center">
-          <div>신랑측 마음 전하기</div>
-          <div className="text-lg h-11 bg-blue-200 flex items-center p-5 rounded-full font-light">
-            계좌번호 보기
-          </div>
+      <div className="mb-[100px]">
+        <div className="w-full text-center text-3xl mt-10 font-thin">
+          마음 전하기
         </div>
-        <div className="flex gap-4 items-center">
-          <div>신부측 마음 전하기</div>
-          <div className="text-lg h-11 bg-purple-200 flex items-center p-5 rounded-full font-light">
-            계좌번호 보기
+        <div className="mt-6 w-full flex flex-col items-center justify-center gap-3">
+          <div className="flex gap-4 items-center">
+            <div>신랑측 마음 전하기</div>
+            <div className="text-lg h-11 bg-blue-200 flex items-center p-5 rounded-full font-light">
+              계좌번호 보기
+            </div>
+          </div>
+          <div className="flex gap-4 items-center">
+            <div>신부측 마음 전하기</div>
+            <div className="text-lg h-11 bg-purple-200 flex items-center p-5 rounded-full font-light">
+              계좌번호 보기
+            </div>
           </div>
         </div>
       </div>
@@ -320,13 +335,21 @@ export default function Home() {
           play={false}
         />
       </div>
-      <div className="w-[14vw] fixed left-0 bottom-10 right-0 mx-auto ">
-        <Lottie
-          ref={ArrowRef}
-          loop={scrollY == 0}
-          animationData={lottieJsonArrow}
-          play={false}
-        />
+      <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col">
+        <div className="mb-[2vh] text-2xl font-thin">
+          <span className={myeonjo.className} style={{ opacity: scrollInfoTextOpacity }}>
+            아래로  천천히 내려주세요
+          </span>
+        </div>
+        <div></div>
+        <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}>
+          <Lottie
+            onClick={onArrowClick}
+            loop={true}
+            animationData={lottieJsonArrow}
+            play={true}
+          />
+        </div>
       </div>
     </main>
   );
