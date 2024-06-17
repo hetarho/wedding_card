@@ -38,12 +38,11 @@ type LottieRefWithAnimationData = {
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(0);
   const [isLottiesEnd, setIsLottiesEnd] = useState(false);
 
-  const handleImageClick = (imageUrl: string) => {
-    console.log('test')
-    setSelectedImage(imageUrl);
+  const handleImageClick = (imgIdx: number) => {
+    setSelectedImage(imgIdx);
     setIsOpen(true);
   };
 
@@ -240,7 +239,7 @@ export default function Home() {
           {
             Array(9).fill(0).map((_, idx) => {
               const url: string = `/imgs/${idx}.jpeg`;
-              return <MyImage layoutId={url} onClick={() => { handleImageClick(url) }} url={url}></MyImage>
+              return <MyImage layoutId={url} onClick={() => { handleImageClick(idx) }} url={url}></MyImage>
             })
           }
         </div>
@@ -389,7 +388,7 @@ export default function Home() {
         </div>
       </div>
 
-      <Modal imageUrl={selectedImage} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <Modal imageIdx={selectedImage} isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
     </main>
   );
@@ -397,7 +396,7 @@ export default function Home() {
 
 function MyImage({ url, onClick, layoutId }: { url: string, layoutId: string, onClick: MouseEventHandler<HTMLImageElement> }) {
   return (
-    <motion.div className="aspect-square w-full overflow-hidden rounded-2xl" layoutId={layoutId} onClick={onClick}>
+    <motion.div key={url} className="aspect-square w-full overflow-hidden rounded-2xl" layoutId={layoutId} onClick={onClick}>
       <Image src={url} alt="" width={500} height={500}></Image>
     </motion.div>
   );
