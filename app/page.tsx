@@ -10,6 +10,7 @@ import lottieJsonWeddingRing from "../public/lotties/wedding_ring.json";
 import lottieJsonAfterLove from "../public/lotties/after_love.json";
 import lottieJsonArrow from "../public/lotties/arrow.json";
 import {
+  MouseEventHandler,
   RefObject,
   useCallback,
   useEffect,
@@ -21,6 +22,8 @@ import { AnimationItem } from "./types/custom/lottie.type";
 import clsx from "clsx";
 import Image from "next/image";
 import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
+import Modal from "./components/modal";
+import { motion } from "framer-motion";
 
 const myeonjo = Nanum_Myeongjo({
   subsets: ["latin"],
@@ -34,6 +37,16 @@ type LottieRefWithAnimationData = {
 };
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [isLottiesEnd, setIsLottiesEnd] = useState(false);
+
+  const handleImageClick = (imageUrl: string) => {
+    console.log('test')
+    setSelectedImage(imageUrl);
+    setIsOpen(true);
+  };
+
   const [scrollY, setScrollY] = useState(0);
   const targetRef = useRef<HTMLDivElement>(null);
   const [scrollInfoTextOpacity, setScrollInfoTextOpacity] = useState(1);
@@ -128,13 +141,14 @@ export default function Home() {
   };
 
   function onArrowClick() {
-    smoothScrollTo(targetRef?.current?.offsetTop ?? 0, 4000); // 1000ms 동안 스크롤
+    smoothScrollTo(targetRef?.current?.offsetTop ?? 0, 5500); // 1000ms 동안 스크롤
 
   }
 
   // 스크롤 이벤트 핸들러
   const handleScroll = () => {
     const position = window.scrollY;
+    setIsLottiesEnd(position > (targetRef?.current?.offsetTop ?? 0));
     setScrollY(position);
   };
 
@@ -187,9 +201,9 @@ export default function Home() {
         { ref: bottomCenterRef, start: 0, end: 0.7 },
         { ref: bottomLeftRef, start: 0, end: 0.65 },
         { ref: bottomRightRef, start: 0, end: 0.65 },
-        { ref: LoveLottieRef, start: 0, end: 0.3 },
-        { ref: WeddingRingLottieRef, start: 0.3, end: 0.55 },
-        { ref: AfterLoveRef, start: 0.55, end: 0.65 },
+        { ref: LoveLottieRef, start: 0, end: 0.2 },
+        { ref: WeddingRingLottieRef, start: 0.2, end: 0.5 },
+        { ref: AfterLoveRef, start: 0.5, end: 0.65 },
         { ref: ArrowRef, start: 0, end: 0.1 },
         ...Object.entries(leftRefs).map((arr) => arr[1]),
         ...Object.entries(rightRefs).map((arr) => arr[1]),
@@ -221,25 +235,25 @@ export default function Home() {
       </div>
       <div className="w-full h-[1800px]"></div>
       <div className="w-full text-center text-3xl font-thin">갤러리</div>
-      <div className="w-full grid grid-cols-2 gap-3 p-3 mt-2" ref={targetRef}>
-        <MyImage url="/imgs/0.jpg"></MyImage>
-        <MyImage url="/imgs/1.jpeg"></MyImage>
-        <MyImage url="/imgs/2.jpeg"></MyImage>
-        <MyImage url="/imgs/3.jpeg"></MyImage>
-        <MyImage url="/imgs/4.jpeg"></MyImage>
-        <MyImage url="/imgs/5.jpeg"></MyImage>
-        <MyImage url="/imgs/6.jpeg"></MyImage>
-        <MyImage url="/imgs/7.jpeg"></MyImage>
-        <MyImage url="/imgs/8.jpeg"></MyImage>
+      <div className="flex justify-center">
+        <div className="max-w-96 w-full grid grid-cols-2 gap-3 p-3 mt-2" ref={targetRef} >
+          {
+            Array(9).fill(0).map((_, idx) => {
+              const url: string = `/imgs/${idx}.jpeg`;
+              return <MyImage layoutId={url} onClick={() => { handleImageClick(url) }} url={url}></MyImage>
+            })
+          }
+        </div>
       </div>
-      <div className="w-full text-center text-3xl mt-10 font-thin">
+
+      <div className="w-full text-center text-4xl mt-16 font-thin">
         오시는 길
       </div>
-      <div className="w-full h-[200px] justify-center items-center flex bg-slate-300 mt-5">
+      <div className="w-full h-[300px] justify-center items-center flex bg-slate-300 mt-5">
         대충 지도 들어갈 공간
       </div>
       <div className="mb-[100px]">
-        <div className="w-full text-center text-3xl mt-10 font-thin">
+        <div className="w-full text-center text-4xl mt-16 font-thin">
           마음 전하기
         </div>
         <div className="mt-6 w-full flex flex-col items-center justify-center gap-3">
@@ -257,129 +271,134 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <div style={{ display: isLottiesEnd ? 'none' : 'block' }}>
 
-      {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
-        <div
-          key={i}
-          className={clsx("fixed mx-auto", {
-            "w-[37vw] -right-[1vw] top-[-7vh]": el == 0,
-            "w-[33vw] -right-[3vw] top-[5vh]": el == 10,
-            "w-[30vw] -right-[5vw] top-[15vh]": el == 20,
-            "w-[29vw] -right-[7vw] top-[25vh]": el == 30,
-            "w-[28vw] -right-[10vw] top-[35vh]": el == 40,
-            "w-[26vw] -right-[7vw] top-[45vh]": el == 50,
-            "w-[24vw] -right-[5vw] top-[55vh]": el == 60,
-            "w-[22vw] -right-[3vw] top-[65vh]": el == 70,
-            "w-[20vw] -right-[0vw] top-[75vh]": el == 80,
-            "w-[15vw] right-[5vw] top-[85vh]": el == 90,
-          })}
-        >
+        {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
+          <div
+            key={i}
+            className={clsx("fixed mx-auto", {
+              "w-[37vw] -right-[1vw] top-[-7vh]": el == 0,
+              "w-[33vw] -right-[3vw] top-[5vh]": el == 10,
+              "w-[30vw] -right-[5vw] top-[15vh]": el == 20,
+              "w-[29vw] -right-[7vw] top-[25vh]": el == 30,
+              "w-[28vw] -right-[10vw] top-[35vh]": el == 40,
+              "w-[26vw] -right-[7vw] top-[45vh]": el == 50,
+              "w-[24vw] -right-[5vw] top-[55vh]": el == 60,
+              "w-[22vw] -right-[3vw] top-[65vh]": el == 70,
+              "w-[20vw] -right-[0vw] top-[75vh]": el == 80,
+              "w-[15vw] right-[5vw] top-[85vh]": el == 90,
+            })}
+          >
+            <Lottie
+              loop={false}
+              ref={rightRefs[el].ref}
+              animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
+              play={false}
+            />
+          </div>
+        ))}
+
+        {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
+          <div
+            key={i}
+            className={clsx("fixed mx-auto scale-x-[-1]", {
+              "w-[37vw] -left-[1vw] top-[-7vh]": el == 0,
+              "w-[33vw] -left-[3vw] top-[5vh]": el == 10,
+              "w-[30vw] -left-[5vw] top-[15vh]": el == 20,
+              "w-[29vw] -left-[7vw] top-[25vh]": el == 30,
+              "w-[28vw] -left-[10vw] top-[35vh]": el == 40,
+              "w-[26vw] -left-[7vw] top-[45vh]": el == 50,
+              "w-[24vw] -left-[5vw] top-[55vh]": el == 60,
+              "w-[22vw] -left-[3vw] top-[65vh]": el == 70,
+              "w-[20vw] -left-[0vw] top-[75vh]": el == 80,
+              "w-[15vw] left-[5vw] top-[85vh]": el == 90,
+            })}
+          >
+            <Lottie
+              loop={false}
+              ref={leftRefs[el].ref}
+              animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
+              play={false}
+            />
+          </div>
+        ))}
+
+        <div className="w-[28vw] fixed bottom-1 left-0 mx-auto -rotate-45 scale-x-[-1]">
           <Lottie
+            ref={bottomRightRef}
             loop={false}
-            ref={rightRefs[el].ref}
-            animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
+            animationData={lottieJsonFlowerC}
             play={false}
           />
         </div>
-      ))}
-
-      {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
-        <div
-          key={i}
-          className={clsx("fixed mx-auto scale-x-[-1]", {
-            "w-[37vw] -left-[1vw] top-[-7vh]": el == 0,
-            "w-[33vw] -left-[3vw] top-[5vh]": el == 10,
-            "w-[30vw] -left-[5vw] top-[15vh]": el == 20,
-            "w-[29vw] -left-[7vw] top-[25vh]": el == 30,
-            "w-[28vw] -left-[10vw] top-[35vh]": el == 40,
-            "w-[26vw] -left-[7vw] top-[45vh]": el == 50,
-            "w-[24vw] -left-[5vw] top-[55vh]": el == 60,
-            "w-[22vw] -left-[3vw] top-[65vh]": el == 70,
-            "w-[20vw] -left-[0vw] top-[75vh]": el == 80,
-            "w-[15vw] left-[5vw] top-[85vh]": el == 90,
-          })}
-        >
+        <div className="w-[28vw] fixed bottom-1 right-0 mx-auto rotate-45">
           <Lottie
+            ref={bottomLeftRef}
             loop={false}
-            ref={leftRefs[el].ref}
-            animationData={i % 2 == 0 ? lottieJsonFlowerD : lottieJsonFlowerB}
+            animationData={lottieJsonFlowerC}
             play={false}
           />
         </div>
-      ))}
-
-      <div className="w-[28vw] fixed bottom-1 left-0 mx-auto -rotate-45 scale-x-[-1]">
-        <Lottie
-          ref={bottomRightRef}
-          loop={false}
-          animationData={lottieJsonFlowerC}
-          play={false}
-        />
-      </div>
-      <div className="w-[28vw] fixed bottom-1 right-0 mx-auto rotate-45">
-        <Lottie
-          ref={bottomLeftRef}
-          loop={false}
-          animationData={lottieJsonFlowerC}
-          play={false}
-        />
-      </div>
-      <div className="w-[65vw] fixed -bottom-[5vh] left-0 right-0 mx-auto ">
-        <Lottie
-          ref={bottomCenterRef}
-          loop={false}
-          animationData={lottieJsonFlowerA}
-          play={false}
-        />
-      </div>
-      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
-        <Lottie
-          ref={LoveLottieRef}
-          loop={scrollY == 0}
-          animationData={lottieJsonLove}
-          play={scrollY == 0}
-        />
-      </div>
-      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
-        <Lottie
-          ref={WeddingRingLottieRef}
-          loop={false}
-          animationData={lottieJsonWeddingRing}
-          play={false}
-        />
-      </div>
-      <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
-        <Lottie
-          ref={AfterLoveRef}
-          loop={false}
-          animationData={lottieJsonAfterLove}
-          play={false}
-        />
-      </div>
-      <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
-        onClick={onArrowClick}>
-        <div className="mb-[2vh] text-2xl font-thin">
-          <span className={myeonjo.className} style={{ opacity: scrollInfoTextOpacity }}>
-            아래 버튼을 클릭해주세요
-          </span>
-        </div>
-        <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}
-        >
+        <div className="w-[65vw] fixed -bottom-[5vh] left-0 right-0 mx-auto ">
           <Lottie
-            loop={true}
-            animationData={lottieJsonArrow}
-            play={true}
+            ref={bottomCenterRef}
+            loop={false}
+            animationData={lottieJsonFlowerA}
+            play={false}
           />
         </div>
+        <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+          <Lottie
+            ref={LoveLottieRef}
+            loop={scrollY == 0}
+            animationData={lottieJsonLove}
+            play={scrollY == 0}
+          />
+        </div>
+        <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+          <Lottie
+            ref={WeddingRingLottieRef}
+            loop={false}
+            animationData={lottieJsonWeddingRing}
+            play={false}
+          />
+        </div>
+        <div className="w-[55vw] fixed top-[35vh] left-0 right-0 mx-auto ">
+          <Lottie
+            ref={AfterLoveRef}
+            loop={false}
+            animationData={lottieJsonAfterLove}
+            play={false}
+          />
+        </div>
+        <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
+          onClick={onArrowClick}>
+          <div className="mb-[2vh] text-2xl font-thin">
+            <span className={myeonjo.className} style={{ opacity: scrollInfoTextOpacity }}>
+              아래 버튼을 클릭해주세요
+            </span>
+          </div>
+          <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}
+          >
+            <Lottie
+              loop={true}
+              animationData={lottieJsonArrow}
+              play={true}
+            />
+          </div>
+        </div>
       </div>
+
+      <Modal imageUrl={selectedImage} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+
     </main>
   );
 }
 
-function MyImage({ url }: { url: string }) {
+function MyImage({ url, onClick, layoutId }: { url: string, layoutId: string, onClick: MouseEventHandler<HTMLImageElement> }) {
   return (
-    <div className="aspect-square w-full overflow-hidden rounded-2xl">
-      <Image alt="img" src={url} width={1000} height={1000}></Image>
-    </div>
+    <motion.div className="aspect-square w-full overflow-hidden rounded-2xl" layoutId={layoutId} onClick={onClick}>
+      <Image src={url} alt="" width={500} height={500}></Image>
+    </motion.div>
   );
 }
