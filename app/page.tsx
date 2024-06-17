@@ -35,6 +35,7 @@ type LottieRefWithAnimationData = {
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
+  const targetRef = useRef<HTMLDivElement>(null);
   const [scrollInfoTextOpacity, setScrollInfoTextOpacity] = useState(1);
 
   const LoveLottieRef = useRef<AnimationItem>(null);
@@ -97,18 +98,38 @@ export default function Home() {
     };
   }, []);
 
+  const smoothScrollTo = (end: number, duration: number) => {
+    const startPosition = window.pageYOffset;
+    const distance = end - startPosition;
+    const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+    const easeInOutQuad = (time: number, start: number, distance: number, duration: number) => {
+      time /= duration / 2;
+      if (time < 1) return distance / 2 * time * time + start;
+      time--;
+      return -distance / 2 * (time * (time - 2) - 1) + start;
+    };
+
+    const scroll = () => {
+      const currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+      const timeElapsed = currentTime - startTime;
+      const next = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+
+      window.scrollTo(0, next);
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(scroll);
+      } else {
+        window.scrollTo(0, end);
+      }
+    };
+
+    requestAnimationFrame(scroll);
+  };
+
   function onArrowClick() {
-    if (scrollY < 3300) {
-      window.scrollTo({
-        top: 3300,
-        behavior: 'smooth' // 부드러운 스크롤 효과
-      });
-    } else if (scrollY < 2400) {
-      window.scrollTo({
-        top: 2400,
-        behavior: 'smooth' // 부드러운 스크롤 효과
-      });
-    }
+    smoothScrollTo(targetRef?.current?.offsetTop ?? 0, 4000); // 1000ms 동안 스크롤
+
   }
 
   // 스크롤 이벤트 핸들러
@@ -200,7 +221,7 @@ export default function Home() {
       </div>
       <div className="w-full h-[1800px]"></div>
       <div className="w-full text-center text-3xl font-thin">갤러리</div>
-      <div className="w-full grid grid-cols-2 gap-3 p-3 mt-2">
+      <div className="w-full grid grid-cols-2 gap-3 p-3 mt-2" ref={targetRef}>
         <MyImage url="/imgs/0.jpg"></MyImage>
         <MyImage url="/imgs/1.jpeg"></MyImage>
         <MyImage url="/imgs/2.jpeg"></MyImage>
@@ -335,16 +356,16 @@ export default function Home() {
           play={false}
         />
       </div>
-      <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col">
+      <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
+        onClick={onArrowClick}>
         <div className="mb-[2vh] text-2xl font-thin">
           <span className={myeonjo.className} style={{ opacity: scrollInfoTextOpacity }}>
-            아래로  천천히 내려주세요
+            아래 버튼을 클릭해주세요
           </span>
         </div>
-        <div></div>
-        <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}>
+        <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}
+        >
           <Lottie
-            onClick={onArrowClick}
             loop={true}
             animationData={lottieJsonArrow}
             play={true}
