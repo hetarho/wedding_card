@@ -239,7 +239,7 @@ export default function Home() {
           {
             Array(9).fill(0).map((_, idx) => {
               const url: string = `/imgs/${idx}.jpeg`;
-              return <MyImage layoutId={url} onClick={() => { handleImageClick(idx) }} url={url}></MyImage>
+              return <MyImage key={idx} layoutId={url} onClick={() => { handleImageClick(idx) }} url={url}></MyImage>
             })
           }
         </div>
