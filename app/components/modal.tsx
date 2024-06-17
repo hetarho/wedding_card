@@ -9,9 +9,12 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ imageIdx, isOpen, onClose }) => {
-    if (!isOpen) return null;
-    const [selectedIdx, setSelectedIdx] = useState(imageIdx);
-    const [url, setUrl] = useState('');
+    const [selectedIdx, setSelectedIdx] = useState(0);
+    const [url, setUrl] = useState(`/imgs/${0}.jpeg`);
+
+    useEffect(() => {
+        setSelectedIdx(imageIdx)
+    }, [imageIdx])
 
     useEffect(() => {
         setUrl(`/imgs/${selectedIdx}.jpeg`);
@@ -25,10 +28,9 @@ const Modal: React.FC<ModalProps> = ({ imageIdx, isOpen, onClose }) => {
     function onClickRightArrow() {
         if (selectedIdx < 8) {
             setSelectedIdx(prev => prev + 1)
-            console.log(selectedIdx);
         }
     }
-
+    if (!isOpen) return null;
 
     return (
         <motion.div
@@ -40,7 +42,7 @@ const Modal: React.FC<ModalProps> = ({ imageIdx, isOpen, onClose }) => {
              bg-black bg-opacity-50 flex justify-center items-center "
 
         ><motion.div className='aspect-square w-full overflow-hidden'
-            layoutId={`/imgs/${selectedIdx}.jpeg`}
+            layoutId={`/imgs/${imageIdx}.jpeg`}
         >
                 <motion.img
                     src={url}

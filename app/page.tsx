@@ -147,7 +147,7 @@ export default function Home() {
   // 스크롤 이벤트 핸들러
   const handleScroll = () => {
     const position = window.scrollY;
-    setIsLottiesEnd(position > (targetRef?.current?.offsetTop ?? 0));
+    setIsLottiesEnd(position > (targetRef?.current?.offsetTop ?? 0) - 100);
     setScrollY(position);
   };
 
