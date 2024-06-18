@@ -38,13 +38,18 @@ type LottieRefWithAnimationData = {
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<number | undefined>();
   const [isLottiesEnd, setIsLottiesEnd] = useState(false);
 
   const handleImageClick = (imgIdx: number) => {
     setSelectedImage(imgIdx);
-    setIsOpen(true);
   };
+
+  useEffect(() => {
+    if (selectedImage !== undefined) {
+      setIsOpen(true);
+    }
+  }, [selectedImage]);
 
   const [scrollY, setScrollY] = useState(0);
   const targetRef = useRef<HTMLDivElement>(null);
@@ -111,21 +116,33 @@ export default function Home() {
   }, []);
 
   const smoothScrollTo = (end: number, duration: number) => {
-    const startPosition = window.pageYOffset;
+    const startPosition = window.scrollY;
     const distance = end - startPosition;
-    const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+    const startTime =
+      "now" in window.performance ? performance.now() : new Date().getTime();
 
-    const easeInOutQuad = (time: number, start: number, distance: number, duration: number) => {
+    const easeInOutQuad = (
+      time: number,
+      start: number,
+      distance: number,
+      duration: number
+    ) => {
       time /= duration / 2;
-      if (time < 1) return distance / 2 * time * time + start;
+      if (time < 1) return (distance / 2) * time * time + start;
       time--;
-      return -distance / 2 * (time * (time - 2) - 1) + start;
+      return (-distance / 2) * (time * (time - 2) - 1) + start;
     };
 
     const scroll = () => {
-      const currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+      const currentTime =
+        "now" in window.performance ? performance.now() : new Date().getTime();
       const timeElapsed = currentTime - startTime;
-      const next = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+      const next = easeInOutQuad(
+        timeElapsed,
+        startPosition,
+        distance,
+        duration
+      );
 
       window.scrollTo(0, next);
 
@@ -141,7 +158,6 @@ export default function Home() {
 
   function onArrowClick() {
     smoothScrollTo(targetRef?.current?.offsetTop ?? 0, 5500); // 1000ms 동안 스크롤
-
   }
 
   // 스크롤 이벤트 핸들러
@@ -164,7 +180,7 @@ export default function Home() {
         const maxScroll =
           document.documentElement.scrollHeight - window.innerHeight;
 
-        setScrollInfoTextOpacity((maxScroll / 2 - scrollY) * 2 / maxScroll);
+        setScrollInfoTextOpacity(((maxScroll / 2 - scrollY) * 2) / maxScroll);
 
         const middle = (end + start) / 2;
 
@@ -221,7 +237,9 @@ export default function Home() {
     <main className="">
       <div className={myeonjo.className}>
         <div className="w-full h-[1500px] flex flex-col items-center pt-[15vh] text-2xl gap-1">
-          <div className="text-4xl mb-2">12월 <span className="text-3xl">14일</span></div>
+          <div className="text-4xl mb-2">
+            12월 <span className="text-3xl">14일</span>
+          </div>
           <div className="flex gap-1 items-center">
             <span className="text-xl">신랑</span>
             <span>이해람</span>
@@ -235,13 +253,25 @@ export default function Home() {
       <div className="w-full h-[1800px]"></div>
       <div className="w-full text-center text-3xl font-thin">갤러리</div>
       <div className="flex justify-center">
-        <div className="max-w-96 w-full grid grid-cols-2 gap-3 p-3 mt-2" ref={targetRef} >
-          {
-            Array(9).fill(0).map((_, idx) => {
+        <div
+          className="max-w-96 w-full grid grid-cols-2 gap-3 p-3 mt-2"
+          ref={targetRef}
+        >
+          {Array(9)
+            .fill(0)
+            .map((_, idx) => {
               const url: string = `/imgs/${idx}.jpeg`;
-              return <MyImage key={idx} layoutId={url} onClick={() => { handleImageClick(idx) }} url={url}></MyImage>
-            })
-          }
+              return (
+                <MyImage
+                  key={idx}
+                  layoutId={url}
+                  onClick={() => {
+                    handleImageClick(idx);
+                  }}
+                  url={url}
+                ></MyImage>
+              );
+            })}
         </div>
       </div>
 
@@ -270,8 +300,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div style={{ display: isLottiesEnd ? 'none' : 'block' }}>
-
+      <div style={{ display: isLottiesEnd ? "none" : "block" }}>
         {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
           <div
             key={i}
@@ -370,33 +399,52 @@ export default function Home() {
             play={false}
           />
         </div>
-        <div className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
-          onClick={onArrowClick}>
+        <div
+          className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
+          onClick={onArrowClick}
+        >
           <div className="mb-[2vh] text-2xl font-thin">
-            <span className={myeonjo.className} style={{ opacity: scrollInfoTextOpacity }}>
+            <span
+              className={myeonjo.className}
+              style={{ opacity: scrollInfoTextOpacity }}
+            >
               아래 버튼을 클릭해주세요
             </span>
           </div>
-          <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}
-          >
-            <Lottie
-              loop={true}
-              animationData={lottieJsonArrow}
-              play={true}
-            />
+          <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}>
+            <Lottie loop={true} animationData={lottieJsonArrow} play={true} />
           </div>
         </div>
       </div>
 
-      <Modal imageIdx={selectedImage} isOpen={isOpen} onClose={() => setIsOpen(false)} />
-
+      <Modal
+        imageIdx={selectedImage ?? 0}
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setSelectedImage(undefined);
+        }}
+      />
     </main>
   );
 }
 
-function MyImage({ url, onClick, layoutId }: { url: string, layoutId: string, onClick: MouseEventHandler<HTMLImageElement> }) {
+function MyImage({
+  url,
+  onClick,
+  layoutId,
+}: {
+  url: string;
+  layoutId: string;
+  onClick: MouseEventHandler<HTMLImageElement>;
+}) {
   return (
-    <motion.div key={url} className="aspect-square w-full overflow-hidden rounded-2xl" layoutId={layoutId} onClick={onClick}>
+    <motion.div
+      key={url}
+      className="aspect-square w-full overflow-hidden rounded-2xl"
+      layoutId={layoutId}
+      onClick={onClick}
+    >
       <Image src={url} alt="" width={500} height={500}></Image>
     </motion.div>
   );
