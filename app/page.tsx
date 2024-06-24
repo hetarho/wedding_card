@@ -1,5 +1,8 @@
 "use client";
 
+import "/swiper.css";
+import "swiper/css";
+
 import Lottie from "react-lottie-player";
 import lottieJsonFlowerA from "../public/lotties/flowerA.json";
 import lottieJsonFlowerB from "../public/lotties/flowerB.json";
@@ -24,6 +27,7 @@ import Image from "next/image";
 import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
 import Modal from "./components/modal";
 import { motion } from "framer-motion";
+import SwipablePhotos from "./components/swiper";
 
 const myeonjo = Nanum_Myeongjo({
   subsets: ["latin"],
@@ -251,13 +255,15 @@ export default function Home() {
         </div>
       </div>
       <div className="w-full h-[1800px]"></div>
-      <div className="w-full text-center text-3xl font-thin">갤러리</div>
-      <div className="flex justify-center">
-        <div
-          className="max-w-96 w-full grid grid-cols-2 gap-3 p-3 mt-2"
+      <div className="w-full h-10" ref={targetRef}></div>
+      <div className="w-full text-center text-4xl font-thin">갤러리</div>
+      <div className="flex justify-center h-[130vw] max-h-[450px] mt-5">
+        {/* <div
+          className="w-full p-3 mt-2 flex"
           ref={targetRef}
-        >
-          {Array(9)
+        > */}
+        <SwipablePhotos></SwipablePhotos>
+        {/* {Array(9)
             .fill(0)
             .map((_, idx) => {
               const url: string = `/imgs/${idx}.jpeg`;
@@ -271,8 +277,8 @@ export default function Home() {
                   url={url}
                 ></MyImage>
               );
-            })}
-        </div>
+            })} */}
+        {/* </div> */}
       </div>
 
       <div className="w-full text-center text-4xl mt-16 font-thin">
