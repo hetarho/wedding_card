@@ -41,19 +41,7 @@ type LottieRefWithAnimationData = {
 };
 
 export default function Home() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<number | undefined>();
   const [isLottiesEnd, setIsLottiesEnd] = useState(false);
-
-  const handleImageClick = (imgIdx: number) => {
-    setSelectedImage(imgIdx);
-  };
-
-  useEffect(() => {
-    if (selectedImage !== undefined) {
-      setIsOpen(true);
-    }
-  }, [selectedImage]);
 
   const [scrollY, setScrollY] = useState(0);
   const targetRef = useRef<HTMLDivElement>(null);
@@ -258,27 +246,7 @@ export default function Home() {
       <div className="w-full h-10" ref={targetRef}></div>
       <div className="w-full text-center text-4xl font-thin">갤러리</div>
       <div className="flex justify-center h-[130vw] max-h-[450px] mt-5">
-        {/* <div
-          className="w-full p-3 mt-2 flex"
-          ref={targetRef}
-        > */}
         <SwipablePhotos></SwipablePhotos>
-        {/* {Array(9)
-            .fill(0)
-            .map((_, idx) => {
-              const url: string = `/imgs/${idx}.jpeg`;
-              return (
-                <MyImage
-                  key={idx}
-                  layoutId={url}
-                  onClick={() => {
-                    handleImageClick(idx);
-                  }}
-                  url={url}
-                ></MyImage>
-              );
-            })} */}
-        {/* </div> */}
       </div>
 
       <div className="w-full text-center text-4xl mt-16 font-thin">
@@ -422,15 +390,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <Modal
-        imageIdx={selectedImage ?? 0}
-        isOpen={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-          setSelectedImage(undefined);
-        }}
-      />
     </main>
   );
 }

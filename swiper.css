@@ -20,6 +20,10 @@
   overflow: visible !important;
 }
 
+.swiper-3d .swiper-slide-shadow {
+  border-radius: 18px;
+}
+
 .swiper-slide:nth-child(1) {
   background-image: url("/imgs/0.jpeg");
 }

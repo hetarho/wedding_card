@@ -9,7 +9,11 @@ const notosansKR = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "임예은 이해람 모바일 청첩장",
-  description: "임예은 이해람 모바일 청첩장",
+  description: "12월 14일 저희 결혼식에 초대합니다.",
+  openGraph: {
+    title: "임예은 이해람 모바일 청첩장",
+    description: "12월 14일 저희 결혼식에 초대합니다.",
+  },
 };
 
 export default function RootLayout({
