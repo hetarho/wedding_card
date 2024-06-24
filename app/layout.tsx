@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "임예은 이해람 모바일 청첩장",
     description: "12월 14일 저희 결혼식에 초대합니다.",
-    images: "/imgs/1.jpeg",
+    images: "https://hae-ram.ye-eun.love/imgs/1.jpeg",
   },
 };
 
