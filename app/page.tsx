@@ -245,7 +245,7 @@ export default function Home() {
       <div className="w-full h-[1800px]"></div>
       <div className="w-full h-10" ref={targetRef}></div>
       <div className="w-full text-center text-4xl font-thin">갤러리</div>
-      <div className="flex justify-center h-[130vw] max-h-[450px] mt-5">
+      <div className="flex justify-center h-[130vw] max-h-[450px] mt-5 overflow-hidden">
         <SwipablePhotos></SwipablePhotos>
       </div>
 
@@ -299,7 +299,6 @@ export default function Home() {
             />
           </div>
         ))}
-
         {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((el, i) => (
           <div
             key={i}
@@ -324,7 +323,6 @@ export default function Home() {
             />
           </div>
         ))}
-
         <div className="w-[28vw] fixed bottom-1 left-0 mx-auto -rotate-45 scale-x-[-1]">
           <Lottie
             ref={bottomRightRef}
@@ -374,18 +372,23 @@ export default function Home() {
           />
         </div>
         <div
-          className="fixed left-0 bottom-10 right-0 mx-auto items-center flex flex-col"
+          className="fixed left-0 bottom-36 right-0 mx-auto items-center flex flex-col"
           onClick={onArrowClick}
         >
-          <div className="mb-[2vh] text-2xl font-thin">
+          <div className=" text-2xl font-thin">
             <span
               className={myeonjo.className}
               style={{ opacity: scrollInfoTextOpacity }}
             >
-              아래 버튼을 클릭해주세요
+              아래 하트를 눌러주세요
             </span>
           </div>
-          <div className="w-[14vw]" style={{ opacity: scrollInfoTextOpacity }}>
+        </div>
+        <div
+          className="fixed left-0 bottom-20 right-0 mx-auto items-center flex flex-col"
+          onClick={onArrowClick}
+        >
+          <div className="w-[20vw]" style={{ opacity: scrollInfoTextOpacity }}>
             <Lottie loop={true} animationData={lottieJsonArrow} play={true} />
           </div>
         </div>
