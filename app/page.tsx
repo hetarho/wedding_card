@@ -8,7 +8,7 @@ import lottieJsonFlowerD from "../public/lotties/flowerD.json";
 import lottieJsonLove from "../public/lotties/love.json";
 import lottieJsonWeddingRing from "../public/lotties/wedding_ring.json";
 import lottieJsonAfterLove from "../public/lotties/after_love.json";
-import lottieJsonArrow from "../public/lotties/arrow.json";
+import lottieJsonHeart from "../public/lotties/heart.json";
 import {
   MouseEventHandler,
   RefObject,
@@ -23,19 +23,39 @@ import Modal from "./components/modal";
 import { animate, motion } from "framer-motion";
 
 export default function Home() {
-  const letters = "12월 14일 결혼".split("");
+  const letters = "저희의 결혼식에 여러분을 초대합니다.".split("");
 
   return (
-    <main className="text-2xl">
-      {letters.map((letter, index) => (
-        <AnimatedLetter
-          key={index}
-          letter={letter}
-          delay={index * 100}
-          duration={1}
-          pause={2}
+    <main className="">
+      <div className="mt-10 flex justify-center text-4xl font-thin">
+        <span className="font-light">12</span>월
+        <span className="font-light">14</span>일
+      </div>
+      <div className="mt-1 flex justify-center items-end text-2xl">
+        <span>이해람</span>
+        <Lottie
+          className="h-12"
+          loop={true}
+          animationData={lottieJsonHeart}
+          play={true}
         />
-      ))}
+        <span>임예은</span>
+      </div>
+      <div className="flex flex-col items-center mt-8 text-3xl">
+        {letters.map((letter, index) =>
+          letter == " " ? (
+            <div key={index} className="h-2"></div>
+          ) : (
+            <AnimatedLetter
+              key={index}
+              letter={letter}
+              delay={index * 110}
+              duration={1.2}
+              pause={3}
+            />
+          )
+        )}
+      </div>
     </main>
   );
 }
@@ -72,10 +92,10 @@ const AnimatedLetter = ({
   duration: number;
   pause: number;
 }) => {
-  const [fontWeight, setFontWeight] = useState(400);
+  const [fontWeight, setFontWeight] = useState(100);
 
   const _forwardAnim = useCallback(() => {
-    animate(400, 900, {
+    animate(100, 900, {
       duration: duration,
       onUpdate(latest) {
         setFontWeight(latest);
@@ -87,7 +107,7 @@ const AnimatedLetter = ({
   }, []);
 
   const _backwardAnim = useCallback(() => {
-    animate(900, 400, {
+    animate(900, 100, {
       duration: duration,
       onUpdate(latest) {
         setFontWeight(latest);
@@ -110,9 +130,9 @@ const AnimatedLetter = ({
 
   return (
     <span
+      className="block"
       style={{
         fontVariationSettings: `'wght' ${fontWeight}, 'opsz' ${fontWeight}`,
-        display: "inline-block",
       }}
     >
       {letter}

@@ -17,7 +17,7 @@ const config: Config = {
         "paper1-texture": "url('/textures/paper1.jpg')",
       },
       fontFamily: {
-        happySans: ["HappinessSans", "sans-serif"],
+        suit: ["suit", "sans-serif"],
       },
     },
   },
