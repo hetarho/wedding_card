@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "YourVariableFont";
-  src: url("/fonts/HappinessSansVF.ttf") format("ttf");
+  font-family: "HappinessSans";
+  src: url("/fonts/HappinessSansVF.woff2") format("woff2");
   font-weight: 400 900;
   font-optical-sizing: 400 900;
   font-display: swap;
+}
+
+main {
+  font-family: "HappinessSans", sans-serif;
 }

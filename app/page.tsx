@@ -9,56 +9,35 @@ import lottieJsonLove from "../public/lotties/love.json";
 import lottieJsonWeddingRing from "../public/lotties/wedding_ring.json";
 import lottieJsonAfterLove from "../public/lotties/after_love.json";
 import lottieJsonArrow from "../public/lotties/arrow.json";
-import { MouseEventHandler, RefObject } from "react";
+import {
+  MouseEventHandler,
+  RefObject,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { AnimationItem } from "./types/custom/lottie.type";
 import clsx from "clsx";
 import Image from "next/image";
 import Modal from "./components/modal";
-import { motion } from "framer-motion";
+import { animate, motion } from "framer-motion";
 
 export default function Home() {
-  const smoothScrollTo = (end: number, duration: number) => {
-    const startPosition = window.scrollY;
-    const distance = end - startPosition;
-    const startTime =
-      "now" in window.performance ? performance.now() : new Date().getTime();
+  const letters = "12월 14일 결혼".split("");
 
-    const easeInOutQuad = (
-      time: number,
-      start: number,
-      distance: number,
-      duration: number
-    ) => {
-      time /= duration / 2;
-      if (time < 1) return (distance / 2) * time * time + start;
-      time--;
-      return (-distance / 2) * (time * (time - 2) - 1) + start;
-    };
-
-    const scroll = () => {
-      const currentTime =
-        "now" in window.performance ? performance.now() : new Date().getTime();
-      const timeElapsed = currentTime - startTime;
-      const next = easeInOutQuad(
-        timeElapsed,
-        startPosition,
-        distance,
-        duration
-      );
-
-      window.scrollTo(0, next);
-
-      if (timeElapsed < duration) {
-        requestAnimationFrame(scroll);
-      } else {
-        window.scrollTo(0, end);
-      }
-    };
-
-    requestAnimationFrame(scroll);
-  };
-
-  return <main className=""></main>;
+  return (
+    <main className="text-2xl">
+      {letters.map((letter, index) => (
+        <AnimatedLetter
+          key={index}
+          letter={letter}
+          delay={index * 100}
+          duration={1}
+          pause={2}
+        />
+      ))}
+    </main>
+  );
 }
 
 function MyImage({
@@ -81,3 +60,62 @@ function MyImage({
     </motion.div>
   );
 }
+
+const AnimatedLetter = ({
+  letter,
+  delay,
+  duration,
+  pause,
+}: {
+  letter: string;
+  delay: number;
+  duration: number;
+  pause: number;
+}) => {
+  const [fontWeight, setFontWeight] = useState(400);
+
+  const _forwardAnim = useCallback(() => {
+    animate(400, 900, {
+      duration: duration,
+      onUpdate(latest) {
+        setFontWeight(latest);
+      },
+      onComplete() {
+        _backwardAnim();
+      },
+    });
+  }, []);
+
+  const _backwardAnim = useCallback(() => {
+    animate(900, 400, {
+      duration: duration,
+      onUpdate(latest) {
+        setFontWeight(latest);
+      },
+      onComplete() {
+        setTimeout(() => {
+          _forwardAnim();
+        }, pause * 1000);
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      _forwardAnim();
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [delay, _forwardAnim]);
+
+  return (
+    <span
+      style={{
+        fontVariationSettings: `'wght' ${fontWeight}, 'opsz' ${fontWeight}`,
+        display: "inline-block",
+      }}
+    >
+      {letter}
+    </span>
+  );
+};
